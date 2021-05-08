@@ -12,7 +12,9 @@ class HomeContentTablet extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Center(child: Text('Tablet  Home')),
+        Container(
+            color: Colors.deepPurple,
+            child: Text('Tablet  Home')),
       ],
     );
   }

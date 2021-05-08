@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hhf_next_gen/ui/views/home/home_view.dart';
+import 'package:hhf_next_gen/app/app.dart';
+import 'package:hhf_next_gen/app/locator.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        // textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Open Sans'),
-      ),
-      home: HomeView(),
-    );
-  }
+void main() {
+  registerAllServices();
+  runApp(MyApp());
 }
+
