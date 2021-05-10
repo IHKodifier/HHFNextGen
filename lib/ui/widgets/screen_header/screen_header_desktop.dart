@@ -13,7 +13,9 @@ class ScreenHeaderDesktop extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          color: Colors.red[800],
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).primaryColorDark
+              : Theme.of(context).primaryColor,
           height: 58,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,7 +79,7 @@ class ScreenHeaderDesktop extends StatelessWidget {
         Container(
           height: 100,
           padding: EdgeInsets.only(bottom: 12),
-          // color: Colors.greenAccent,
+          color: Colors.white38,
           alignment: Alignment.center,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

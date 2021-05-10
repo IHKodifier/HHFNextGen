@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hhf_next_gen/app/console_utility.dart';
 import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/routing/router.dart';
+import 'package:hhf_next_gen/app/theme.dart';
 import 'package:hhf_next_gen/services/navigation_service.dart';
 import 'package:hhf_next_gen/app/routing/routenames.dart' as routes;
 
@@ -10,10 +11,49 @@ class HomeContentDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // buildNavBar(context),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Transform.rotate(
+            angle: -3.14 / 4,
+            child: Container(
+              color: Colors.amber[800],
+              child: Text(
+                'DESKTOP MODE',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          Column(
+            children: [
+              Text(
+                'Welcome User!',
+                style: Theme.of(context).textTheme.headline3,
+              ),
+              Text(
+                'Today Looks a BUSY Day ahead',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2!
+                    .copyWith(fontSize: 20),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 150,
+          ),
+          Card(
+            elevation: 10,
+            child: Wrap(),
+          ),
+        ],
+      ),
     );
   }
 

@@ -18,7 +18,9 @@ class ScreenHeaderTablet extends StatelessWidget {
       children: [
         Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          color: Colors.red[800],
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).primaryColorDark
+              : Theme.of(context).primaryColor,
           height: 58,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

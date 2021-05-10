@@ -12,7 +12,11 @@ class HomeContentMobile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Center(child: Text('mobile Home')),
+        Center(
+            child: Text(
+          'MOBILE MODE',
+          style: Theme.of(context).textTheme.headline5,
+        )),
       ],
     );
   }

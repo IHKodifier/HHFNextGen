@@ -7,15 +7,21 @@ class HomeContentTablet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-            color: Colors.deepPurple,
-            child: Text('Tablet  Home')),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Text(
+            ' TAB Mode',
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text('Welcome User'),
+          Text('Today is Busy!'),
+          Text('Take a look'),
+        ],
+      ),
     );
   }
 }

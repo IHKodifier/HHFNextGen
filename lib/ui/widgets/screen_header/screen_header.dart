@@ -9,7 +9,6 @@ class ScreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
-      // mobile: NavigationBarMobile(),
       mobile: Container(),
       tablet: ScreenHeaderTablet(),
       desktop: ScreenHeaderDesktop(),

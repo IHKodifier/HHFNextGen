@@ -25,12 +25,12 @@ class HomeView extends StatelessWidget {
                 sizingInformation.deviceScreenType == DeviceScreenType.tablet
             ? NavigationDrawer()
             : null,
-        backgroundColor: Colors.white70,
+        backgroundColor: Colors.white54,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            (sizingInformation.deviceScreenType != DeviceScreenType.mobile 
-                       )
+            (sizingInformation.deviceScreenType != DeviceScreenType.mobile)
                 ? ScreenHeader()
                 : Container(),
             Expanded(
