@@ -11,11 +11,11 @@ class HomeWelcomeNote extends StatelessWidget {
       children: [
         Text(
           'Welcome User!',
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.headline5,
         ),
         Text(
           'Today Looks a BUSY Day ahead',
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 20),
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 16),
         ),
       ],
     );
