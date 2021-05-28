@@ -32,21 +32,7 @@ class ProjectOverview extends StatelessWidget {
               paramValue: '11,587',
               units: 'cases',
             ),
-            OverViewCard(
-              title: 'Cases this year',
-              paramValue: '542',
-              units: 'cases',
-            ),
-            OverViewCard(
-              title: 'Cases this month',
-              paramValue: '37',
-              units: 'PKR',
-            ),
-            OverViewCard(
-              title: 'Payments this month',
-              paramValue: '63,580',
-              units: 'PKR',
-            ),
+           
             Container(
               width: 250,
               height: 120,

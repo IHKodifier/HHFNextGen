@@ -6,4 +6,5 @@ ThemeData globalTheme = ThemeData(
     primaryColorDark: Colors.teal,
     primaryColorLight: Colors.red[50],
     accentColor: Colors.white54,
-    primarySwatch: Colors.red);
+    primarySwatch: Colors.red,
+    appBarTheme: AppBarTheme(color: Colors.white));

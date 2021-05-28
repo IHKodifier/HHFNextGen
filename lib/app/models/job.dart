@@ -1,5 +1,5 @@
-import 'package:hhf_next_gen/models/enums.dart';
-import '../models/enums.dart';
+import 'package:hhf_next_gen/app/models/enums.dart';
+import 'enums.dart';
 
 class Job {
   final String id;
@@ -9,7 +9,7 @@ class Job {
   final String assignedBy;
   final String hfCase;
   final int dueIn;
-  final JobStatus jobStatus;
+  // final JobStatus jobStatus;
 
   Job(
     this.id,
@@ -19,7 +19,7 @@ class Job {
     this.assignedBy,
     this.hfCase,
     this.dueIn,
-    this.jobStatus,
+    // this.jobStatus,
   );
 
   Job.fromMap(Map<String, dynamic> data)
@@ -27,18 +27,19 @@ class Job {
         title = data['title'],
         description = data['description'],
         assignee = data['assignee'],
-        jobStatus = data['jobStatus'],
+        // jobStatus = data['jobStatus'],
         assignedBy = data['assignedBy'],
         hfCase = data['hfCase'],
         dueIn = data['dueIn'];
 
-  @override
-  String toString() {
-    // TODO: implement toString
-    String str =
-        'printing Instance of Job. Job id =$id , title = $title , desccription= $description , assignee = $assignee, assigned By = $assignedBy , HF Case= $hfCase, Due in = $dueIn JobStatus =${JobStatus.values[jobStatus.index]} ';
-    return str;
-  }
+  // @override
+  // String toString() {
+  //   // TODO: implement toString
+  //   String str =
+  //       // 'printing Instance of Job. Job id =$id , title = $title , desccription= $description , assignee = $assignee, assigned By = $assignedBy , HF Case= $hfCase, Due in = $dueIn JobStatus =${JobStatus.values[jobStatus.index]} '
+  //       // ;
+  //   return str;
+  // }
 
 
 

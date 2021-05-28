@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hhf_next_gen/ui/widgets/screen_header/nav_bar_item.dart';
 
 class DrawerItem extends StatelessWidget {
   final String title;
@@ -16,7 +15,7 @@ class DrawerItem extends StatelessWidget {
           SizedBox(
             width: 30,
           ),
-          NavBarItem(title)
+         Text(title),
         ],
       ),
     );
