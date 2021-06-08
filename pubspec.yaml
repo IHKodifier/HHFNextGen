@@ -23,16 +23,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore: ^2.2.0
   cupertino_icons: ^1.0.2
+  dependencies: null
+  firebase_core: ^1.2.0
   flutter_riverpod: null
+  flutter_typeahead: ^3.1.3
   font_awesome_flutter: ^9.0.0
   get_it: ^7.1.3
   google_fonts: ^2.0.0-nullsafety.0
   intl: ^0.17.0
   responsive_builder: ^0.4.1
-  dependencies:
-  firebase_core: "^1.2.0"
-  cloud_firestore: "^2.2.0"
 
 dev_dependencies:
   flutter_test:
@@ -74,4 +75,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
 # hfhjjg

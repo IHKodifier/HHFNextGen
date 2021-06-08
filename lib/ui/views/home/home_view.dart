@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hhf_next_gen/app/locator.dart';
-import 'package:hhf_next_gen/services/navigation_service.dart';
 import 'package:hhf_next_gen/ui/views/home/home_content_desktop.dart';
 import 'package:hhf_next_gen/ui/views/home/home_content_mobile.dart';
 import 'package:hhf_next_gen/ui/views/home/home_content_tablet.dart';

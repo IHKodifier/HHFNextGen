@@ -7,8 +7,8 @@ import 'package:hhf_next_gen/app/console_utility.dart';
 import 'package:hhf_next_gen/app/constants/styles.dart';
 import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/routing/router.dart';
+import 'package:hhf_next_gen/app/services/navigation_service.dart';
 import 'package:hhf_next_gen/app/theme.dart';
-import 'package:hhf_next_gen/services/navigation_service.dart';
 import 'package:hhf_next_gen/app/routing/routenames.dart' as routes;
 import 'package:hhf_next_gen/ui/views/home/home_welcome_note.dart';
 import 'package:hhf_next_gen/ui/views/home/job_inbox.dart';
@@ -63,14 +63,7 @@ class HomeContentDesktop extends StatelessWidget {
                                         0.18,
                                     child: ElevatedButton.icon(
                                         style: globalButtonStyle,
-                                        onPressed: () async {
-                                          await FirebaseFirestore.instance
-                                              .collection('financingCases')
-                                              .add({
-                                            'createdBy': 'Firestore',
-                                            'patientId': 'Kamzor Khan'
-                                          });
-                                        },
+                                        onPressed: createNewCase,
                                         icon: Icon(
                                           Icons.add,
                                           size: 45,
@@ -138,6 +131,15 @@ class HomeContentDesktop extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<dynamic> createNewCase() async {
+    //  await FirebaseFirestore.instance
+    //       .collection('financingCases')
+    //       .add({'createdBy': 'Firestore', 'patientId': 'Kamzor Khan'});
+
+    final navigator = servicelocator<NavigationService>();
+    navigator.navigateTo(routes.NewCaseRoute);
   }
 
   buildNavBar(BuildContext context) {

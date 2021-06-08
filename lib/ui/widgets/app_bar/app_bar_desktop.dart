@@ -12,48 +12,53 @@ class AppBarDesktop extends StatelessWidget {
           Expanded(
             // TODO insert role specific navbar here
             child: NavMenu(),
+            // child: Container(),
             flex: 2,
           ),
           // Text('Home'),
-          Row(
-            children: [
-              Row(
-                children: [
-                  // TODO read from provider
-                  Text(
-                    'Nasir Mehmood',
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                          // color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    'Billing Officer',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(fontSize: 12, fontStyle: FontStyle.italic),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 4,
-              ),
-              Icon(
-                Icons.account_circle,
-                size: 35,
-                color: Theme.of(context).primaryColor,
-              ),
-            ],
-          ),
+          // buildCurrentUser(context),
         ],
       ),
       // toolbarHeight: 100,
       elevation: 5,
+    );
+  }
+
+  Row buildCurrentUser(BuildContext context) {
+    return Row(
+      children: [
+        Row(
+          children: [
+            // TODO read from provider
+            Text(
+              'Nasir Mehmood',
+              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    // color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              'Billing Officer',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2!
+                  .copyWith(fontSize: 12, fontStyle: FontStyle.italic),
+            ),
+          ],
+        ),
+        SizedBox(
+          width: 4,
+        ),
+        Icon(
+          Icons.account_circle,
+          size: 35,
+          color: Theme.of(context).primaryColor,
+        ),
+      ],
     );
   }
 }
