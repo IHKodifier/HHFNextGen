@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/routing/router.dart';
 import 'package:hhf_next_gen/app/services/navigation_service.dart';
-import 'package:hhf_next_gen/app/theme.dart';
+import 'package:hhf_next_gen/app/constants/theme.dart';
 import 'package:hhf_next_gen/ui/views/home/home_view.dart';
 import 'routing/routenames.dart' as routes;
 

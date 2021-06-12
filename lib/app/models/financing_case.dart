@@ -1,4 +1,4 @@
-import 'dart:html';
+
 
 import 'package:hhf_next_gen/app/models/document_time_stamp.dart';
 import 'package:hhf_next_gen/app/models/patient.dart';
@@ -10,7 +10,7 @@ class FinancingCase {
       guesstimatedCost,
       estimatedCost,
       totalCost,
-      purchaseOders,
+      purchaseOrders,
       invoices,
       payments,
       documentTimeStamp,

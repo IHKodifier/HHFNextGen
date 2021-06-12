@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 enum CaseStatus {
   Exploratory,
-  ReferredToDoctor,
-  started,
+  referredForCheckup,
+  Initiated,
   EvaluationAssigned,
   Evaluated,
   Decided,
