@@ -1,11 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hhf_next_gen/app/console_utility.dart';
-import 'package:hhf_next_gen/app/constants/styles.dart';
+import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/models/patient.dart';
 import 'package:hhf_next_gen/app/services/search_service.dart';
-import 'package:hhf_next_gen/ui/views/new_case/new_case_dialog.dart';
+import 'package:hhf_next_gen/ui/views/new_case/new_patient.dart';
 
 class NewFinancingCase extends StatefulWidget {
   const NewFinancingCase({Key? key}) : super(key: key);
@@ -15,18 +16,18 @@ class NewFinancingCase extends StatefulWidget {
 }
 
 class _NewFinancingCaseState extends State<NewFinancingCase> {
-  List<Patient?> serverResults = List.generate(0, (index) => null);
-  List<Patient?> localResults = List.generate(0, (index) => null);
   List<Patient?> displayResults = List.generate(0, (index) => null);
-  late OverlayState overlayState;
-  late OverlayEntry overlayEntry;
   List<bool> financingType = [
     false,
     false,
   ];
   bool isBusy = false;
   String _query = '';
-  var caseStatusitems = ['Exploratory', 'Initiated'];
+  String selectedService = '';
+  var caseStatusitems = [
+    'Exploratory',
+    'Initiated',
+  ];
   String selectedState = 'Exploratory';
   var caseServiceitemsList = [
     // TODO grab panel services from firestore
@@ -38,9 +39,11 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
     'Diagnostics',
     'Gastric Ligation',
   ];
-  String selectedService = '';
+  SearchService searchService = servicelocator<SearchService>();
   GlobalKey nameFieldKey = GlobalKey();
   late Offset nameFieldPosition;
+  late OverlayState overlayState;
+  late OverlayEntry overlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
       body: Center(
         child: Container(
           height: double.infinity,
-          width: MediaQuery.of(context).size.width * .75,
+          width: MediaQuery.of(context).size.width * .45,
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Container(
@@ -71,9 +74,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     nameTextField(),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    SizedBox(height: 20),
                     // Tooltip(
                     //   message: 'create New Patient',
                     //   child: FloatingActionButton(
@@ -101,7 +102,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
                         : Container(),
                     SizedBox(height: 40),
 
-                    buildButtonBar(),
+                    // buildButtonBar(),
                   ],
                 )),
               ),
@@ -112,28 +113,79 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
     );
   }
 
-  DropdownButton<String> buildStatusDropDown() {
-    return DropdownButton<String>(
-        value: null,
-        hint: Text('Select Case Status'),
-        onChanged: (String? newValue) {
-          setState(() {
-            selectedState = newValue!;
-
-            ConUtils.printLog('selected value equals $newValue');
-          });
-        },
-        items: caseStatusitems
-            .map(
-              (e) => DropdownMenuItem<String>(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(e),
+  Widget nameTextField() {
+    return Material(
+      child: Container(
+        // width: MediaQuery.of(context).size.width*.35,
+        child: TypeAheadField(
+          suggestionsCallback: (pattern) async {
+            return await searchService.searchPatient(pattern);
+          },
+          itemBuilder: buildPatientCard,
+          noItemsFoundBuilder: (_) => Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'No matching patients found in the database...',
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption!
+                      .copyWith(fontSize: 18, fontStyle: FontStyle.italic),
                 ),
-                value: e,
+                IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (context) => NewPatient(),
+                      );
+                    },
+                    icon: FaIcon(
+                      FontAwesomeIcons.plusCircle,
+                      size: 50,
+                    )),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  'Tap the  button above to create new patient',
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+                        fontSize: 18,
+                        // fontStyle: FontStyle.italic,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          onSuggestionSelected: (patientSuggestion) {},
+          textFieldConfiguration: TextFieldConfiguration(
+            autofocus: true,
+            style: DefaultTextStyle.of(context).style.copyWith(fontSize: 18),
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              prefix: Icon(Icons.search),
+              hintText: 'Start typing patient name',
+              labelText: 'Patient Name',
+              contentPadding: EdgeInsets.only(left: 25),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-            )
-            .toList());
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void startSearch(String query) async {
+    displayResults = await searchService.searchPatient(query);
+    overlayState = Overlay.of(context)!;
+    buildResultsOverlay();
+    overlayState.insert(overlayEntry);
+    print('working');
+    setState(() {});
   }
 
   ToggleButtons buildFinancingTypeToggleButtons(BuildContext context) {
@@ -164,7 +216,6 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
             ],
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
           child: Column(
@@ -181,12 +232,6 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
             ],
           ),
         ),
-
-        // OutlinedButton.icon(
-        //   onPressed: () {},
-        //   icon: Icon(Icons.monetization_on),
-        //   label: Text('Cash Subsistence'),
-        // ),
       ],
       isSelected: financingType,
       selectedColor: Theme.of(context).accentColor,
@@ -209,278 +254,34 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
     );
   }
 
-  TextField nameTextField() {
-    return TextField(
-      onChanged: initiatePatientSearchByName,
-      key: nameFieldKey,
-      decoration: InputDecoration(
-        prefix: Icon(Icons.search),
-        hintText: 'Start typing patient name',
-        labelText: 'Patient Name',
-        contentPadding: EdgeInsets.only(left: 25),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
+  DropdownButton<String> buildStatusDropDown() {
+    return DropdownButton<String>(
+        value: selectedState,
+        hint: Text('Select Case Status'),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedState = newValue!;
 
-  Widget buildButtonBar() {
-    return ButtonBar(
-      buttonHeight: 80,
-      buttonMinWidth: 200,
-      layoutBehavior: ButtonBarLayoutBehavior.padded,
-      buttonPadding: EdgeInsets.all(8),
-      alignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Container(
-          width: 250,
-          child: ElevatedButton.icon(
-              onPressed: () {},
-              style: globalButtonStyle.copyWith(),
-              icon: Icon(
-                Icons.restart_alt,
-                size: 50,
+            ConUtils.printLog('selected value equals $newValue');
+          });
+        },
+        items: caseStatusitems
+            .map(
+              (e) => DropdownMenuItem<String>(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(e),
+                ),
+                value: e,
               ),
-              label: Text('Reset')),
-        ),
-        Container(
-          width: 250,
-          child: ElevatedButton.icon(
-              onPressed: () {},
-              style: globalButtonStyle,
-              icon: Icon(
-                Icons.save,
-                size: 50,
-              ),
-              label: Text('Save')),
-        ),
-      ],
-    );
-  }
-
-  Widget resultsPanel(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * .65,
-      color: Colors.blueGrey[50],
-      child: buildResultsGrid(),
-    );
-  }
-
-  initiatePatientSearchByName(String query) async {
-    showOverLay();
-
-    setState(() {
-      this._query = query;
-    });
-
-    switch (_query.length) {
-      case 0:
-        resetResultsPanel();
-
-        break;
-      case 1:
-        // do server search
-        serverSideSearch();
-        break;
-      case 2:
-        // do local search
-        doLOcalSearch();
-        break;
-      default:
-        doLOcalSearch();
-    }
-  }
-
-  buildResultsGrid() {
-    // if (displayResults.length == 0) {
-    //   return Center(
-    //     child: Text(
-    //       'No Matching results found for \"$_query\"',
-    //       style: Theme.of(context).textTheme.headline6,
-    //     ),
-    //   );
-    // } else if (this._query.length > 0 && displayResults.length == 0) {
-    //   return Column(
-    //     children: [
-    //       Text(
-    //         'No Matching results found for \"$_query\"',
-    //         style: Theme.of(context).textTheme.headline6,
-    //       ),
-    //       ElevatedButton.icon(
-    //           onPressed: () {},
-    //           icon: Icon(Icons.add),
-    //           label: Text('create \"${this._query}\"')),
-    //     ],
-    //   );
-    // }
-    return GridView.extent(
-        padding: EdgeInsets.only(left: 10.0, right: 10.0),
-        maxCrossAxisExtent: 250,
-        crossAxisSpacing: 4.0,
-        mainAxisSpacing: 4.0,
-        primary: false,
-        shrinkWrap: true,
-        children: displayResults.map(
-          (patient) {
-            return buildPatientCard(patient!);
-          },
-        ).toList());
-  }
-
-  Widget buildPatientCard(Patient patient) {
-    ConUtils.printLog(patient.firstName);
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      elevation: 2.0,
-      child: Stack(
-        // mainAxisAlignment: MainAxisAlignment.start,
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Image.network('https://i.pravatar.cc/'),
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 8,
-            child: CircleAvatar(
-              backgroundColor: Colors.blueGrey.shade200,
-              radius: 40,
-            ),
-          ),
-          Positioned(
-            left: 10,
-            right: 10,
-            bottom: 65,
-            child: Text(
-              patient.firstName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-              ),
-            ),
-          ),
-          Positioned(
-            left: 10,
-            right: 10,
-            bottom: 35,
-            child: Text(
-              patient.lastName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20.0,
-              ),
-            ),
-          ),
-
-          Positioned(
-            child: Text('45 yrs'),
-            bottom: 4,
-            right: 12,
-          )
-        ],
-      ),
-    );
-  }
-
-  resetResultsPanel() {
-    setState(() {
-      serverResults = [];
-      localResults = [];
-      displayResults = [];
-      // displayResults.add(Patient(patientId: patientId, firstName: firstName, lastName: lastName))
-      // isSearching = false;
-    });
-  }
-
-  Future<void> serverSideSearch() async {
-    //TODO grab patients from firebase using services
-    setState(() {
-      displayResults.clear();
-    });
-
-    //grab results from firestore
-
-    var result =
-        await SearchService.searchFirestorePatientByName(_query.toUpperCase());
-    setState(() {
-      // isSearching = true;
-      serverResults = result;
-
-      displayResults = serverResults;
-    });
-  }
-
-  void doLOcalSearch() {
-    //only do the local search
-    _query = _query.toLowerCase();
-    _query = _query.replaceRange(0, 1, _query[0].toUpperCase());
-    this._query = _query;
-
-    // query = query[0].toUpperCase();
-    localResults.clear();
-    // displayResults.clear();
-    serverResults.forEach((patient) {
-      if (patient!.firstName.startsWith(_query)) {
-        setState(() {
-          // isSearching = true;
-          localResults.add(patient);
-          displayResults = localResults;
-        });
-      }
-    });
-  }
-
-  addButton(String name) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      elevation: 2.0,
-      child: Column(
-        children: [
-          Icon(
-            Icons.add,
-            size: 45,
-          ),
-          Text('Create \n ${this._query}'),
-        ],
-      ),
-    );
-  }
-
-  void newPatientDoalogue() {
-    AlertDialog dialog = NewPatientDialog();
-    showDialog(context: context, builder: (_) => dialog);
-  }
-
-  Future<void> showOverLay() async {
-    RenderBox? renderBox =
-        nameFieldKey.currentContext!.findRenderObject() as RenderBox?;
-    nameFieldPosition = renderBox!.localToGlobal(Offset.zero);
-    overlayState = Overlay.of(context)!;
-    overlayEntry = OverlayEntry(
-        builder: (_) => Positioned(
-            // top: 50,
-            top: nameFieldPosition.dy + renderBox.size.height,
-            left: 50,
-            right: 50,
-            child: SizedBox(
-              // height: 50,
-              width: 50,
-              // color: Colors.deepPurple,
-              child: resultsPanel(context),
-            )));
-
-    overlayState.insert(overlayEntry);
-    // await Future.delayed(Duration(milliseconds: 500));
-    // overlayEntry.remove();
+            )
+            .toList());
   }
 
   buildServiceDropDown() {
     return DropdownButton<String>(
         // DropdownButtonHideUnderline:
-        value: null,
+        value: selectedService,
         hint: Text('Select Case Status'),
         onChanged: (String? newValue) {
           setState(() {
@@ -500,5 +301,98 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
               ),
             )
             .toList());
+  }
+
+  buildResultsOverlay() {
+    RenderBox? renderBox =
+        nameFieldKey.currentContext!.findRenderObject() as RenderBox?;
+    nameFieldPosition = renderBox!.localToGlobal(Offset.zero);
+    overlayEntry = OverlayEntry(
+        builder: (_) => Positioned(
+            // top: 50,
+            top: nameFieldPosition.dy + renderBox.size.height + 10,
+            left: 50,
+            right: 50,
+            child: SizedBox(
+                // height: 100,
+                // width: 50,
+                child: Container(
+              color: Colors.blueGrey.shade200,
+              child: buildResultsGrid(),
+            )
+                // child: newPatientDoalogue,
+                )));
+  }
+
+  buildZeroResults() {
+    return Column(
+      children: [
+        Text(
+          'No Matching results found for $_query',
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        FloatingActionButton(
+          // onPressed: newPatientDoalogue,
+          onPressed: () {},
+          backgroundColor: Colors.white,
+          elevation: 5,
+          child: Icon(
+            Icons.add,
+            size: 50,
+            color: Colors.red,
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildResultsGrid() {
+    return GridView.extent(
+        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+        maxCrossAxisExtent: 250,
+        crossAxisSpacing: 4.0,
+        mainAxisSpacing: 4.0,
+        primary: false,
+        shrinkWrap: true,
+        children: displayResults.map(
+          (patient) {
+            return buildPatientCard(context, patient!);
+          },
+        ).toList());
+  }
+
+  Widget buildPatientCard(BuildContext context, Patient? patient) {
+    ConUtils.printLog(patient!.firstName);
+    return Container(
+      width: 50,
+      child: ListTile(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.center,
+        leading: CircleAvatar(
+          backgroundColor: Colors.blueGrey.shade200,
+          radius: 40,
+        ),
+
+        title: Text(
+          patient.firstName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20.0,
+          ),
+        ),
+
+        subtitle: Text(
+          patient.lastName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20.0,
+          ),
+        ),
+
+        trailing: Text('45 yrs'),
+      ),
+    );
   }
 }
