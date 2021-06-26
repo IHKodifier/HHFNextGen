@@ -442,8 +442,8 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
 
     /// grab results from firestore
 
-    var result =
-        await SearchService.searchFirestorePatientByName(_query.toUpperCase());
+    var result = await SearchService()
+        .searchFirestorePatientByName(_query.toUpperCase());
     setState(() {
       isBusy = true;
       serverResults = result;
