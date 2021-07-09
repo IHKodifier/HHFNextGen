@@ -56,6 +56,8 @@ class AppUserModel {
 
     fireAuthUid = userCredential.user!.uid;
   }
+  AppUserModel.fromMinimal(String email) : email = email;
+  AppUserModel.fromNull() : email = '';
 
   AppUserModel.fromData(Map<String, dynamic> data, String providerId)
       : fireAuthUid = data['fireAuthUid'],

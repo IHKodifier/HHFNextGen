@@ -8,12 +8,12 @@ import 'package:flutter/services.dart';
 class ConUtils {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
-  static printLog(String data) {
+  static printLog(String? data) {
     print('_____________________________________PRINTING APP LOG______________________________________________\n' +
         '_________________________________' +
         DateTime.now().toString() +
         '___________________________________________\n' +
-        data +
+        data! +
         '\n_______________________________________________________________________________________________________');
   }
 
@@ -42,7 +42,7 @@ class ConUtils {
               _readWindowsDeviceInfo(await deviceInfoPlugin.windowsInfo);
         }
       }
-      printLog(deviceData.toString());
+       printLog(deviceData.toString());
     } on PlatformException {
       deviceData = <String, dynamic>{
         'Error:': 'Failed to get platform version.'

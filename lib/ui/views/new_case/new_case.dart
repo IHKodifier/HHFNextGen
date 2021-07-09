@@ -44,6 +44,8 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
   late Offset nameFieldPosition;
   late OverlayState overlayState;
   late OverlayEntry overlayEntry;
+  bool hasPatientSelection = false;
+  late Patient? selectedPatient = null;
 
   @override
   Widget build(BuildContext context) {
@@ -75,19 +77,11 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
                   children: [
                     nameTextField(),
                     SizedBox(height: 20),
-                    // Tooltip(
-                    //   message: 'create New Patient',
-                    //   child: FloatingActionButton(
-                    //     onPressed: newPatientDoalogue,
-                    //     backgroundColor: Colors.white,
-                    //     elevation: 5,
-                    //     child: Icon(
-                    //       Icons.add,
-                    //       size: 50,
-                    //       color: Colors.red,
-                    //     ),
-                    //   ),
-                    // ),
+
+                    /// uncommentinhg line below will cause error.
+                    /// TODO: need to attack this with state managemet
+                    // hasPatientSelection? buildSelectedPatient():Container(),
+
                     buildFinancingTypeToggleButtons(context),
 
                     SizedBox(
@@ -117,7 +111,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
     return Material(
       child: Container(
         // width: MediaQuery.of(context).size.width*.35,
-        child: TypeAheadField(
+        child: TypeAheadField<Patient?>(
           suggestionsCallback: (pattern) async {
             return await searchService.searchPatient(pattern);
           },
@@ -159,7 +153,15 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
               ],
             ),
           ),
-          onSuggestionSelected: (patientSuggestion) {},
+          onSuggestionSelected: (patientSuggestion) {
+            setState(() {
+              selectedPatient = patientSuggestion ?? null as Patient;
+              hasPatientSelection = true;
+            });
+
+            ConUtils.printLog(
+                '${selectedPatient!.firstName} was selected from Search');
+          },
           textFieldConfiguration: TextFieldConfiguration(
             autofocus: true,
             style: DefaultTextStyle.of(context).style.copyWith(fontSize: 18),
@@ -391,8 +393,41 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
           ),
         ),
 
-        trailing: Text('45 yrs'),
+        trailing: Text('${patient.age.toString()} yrs'),
       ),
+    );
+  }
+
+  buildSelectedPatient() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(
+          'selectedPatient: ',
+          style: Theme.of(context).textTheme.caption,
+        ),
+        buildPatientCard(context, selectedPatient),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'remove',
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.blueGrey,
+                  ),
+            ),
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    selectedPatient = null as Patient;
+                    hasPatientSelection = false;
+                  });
+                },
+                icon: FaIcon(FontAwesomeIcons.times)),
+          ],
+        ),
+      ],
     );
   }
 }
