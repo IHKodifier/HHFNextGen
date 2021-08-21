@@ -5,16 +5,16 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-class ConUtils {
+class Utilities {
   static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Map<String, dynamic> _deviceData = <String, dynamic>{};
-  static printLog(String? data) {
-    print('_____________________________________PRINTING APP LOG______________________________________________\n' +
-        '_________________________________' +
-        DateTime.now().toString() +
-        '___________________________________________\n' +
-        data! +
-        '\n_______________________________________________________________________________________________________');
+  static log(String? data) {
+    print('''
+        ////////////////////////////PRINTING APP LOG ///////////////////////////////////////////
+            [ ${DateTime.now().toString()}]
+        ${data!} 
+        
+        ''');
   }
 
   var deviceData = <String, dynamic>{};
@@ -42,14 +42,15 @@ class ConUtils {
               _readWindowsDeviceInfo(await deviceInfoPlugin.windowsInfo);
         }
       }
-       printLog(deviceData.toString());
+      log(deviceData.toString());
     } on PlatformException {
       deviceData = <String, dynamic>{
         'Error:': 'Failed to get platform version.'
       };
     }
   }
-static DateTime? toDateTime(Timestamp value) {
+
+  static DateTime? toDateTime(Timestamp value) {
     if (value == null) {
       return null;
     }
@@ -64,7 +65,6 @@ static DateTime? toDateTime(Timestamp value) {
 
     return date.toUtc();
   }
-
 
   Map<String, dynamic> _readAndroidBuildData(AndroidDeviceInfo build) {
     return <String, dynamic>{
@@ -183,8 +183,5 @@ static DateTime? toDateTime(Timestamp value) {
 //           sink.add(appUsers);
 //         },
 //       );
-
-
-
 
 }

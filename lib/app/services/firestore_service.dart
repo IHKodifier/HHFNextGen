@@ -2,16 +2,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
-import 'package:hhf_next_gen/app/models/app_user_model.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/user_role.dart';
+import 'package:hhf_next_gen/app/tools/class_info.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
+import 'package:hhf_next_gen/app/models/app_user.dart';
 import 'package:hhf_next_gen/app/models/patient.dart';
 
 /// endregion
 
 /// # region ClassInfo
-final String className = 'FirestoreService';
-final String _version = '1.0.0';
-final String _packageName = 'zimster_messaging';
+ClassInfo _classInfo = ClassInfo(name: 'FirestoreService', version: '1.0.0');
 
 /// endregion
 
@@ -29,15 +29,31 @@ class FirestoreService {
 
   CollectionReference _usercollectionReference =
       FirebaseFirestore.instance.collection('appUsers');
+  late DocumentReference documentReference;
+  late QueryDocumentSnapshot<Map<String, dynamic>> queryDocumentSnapshot;
+  late QuerySnapshot<Map<String, dynamic>> querySnapshot;
 
-  Future<bool?> createAppUserDoc(
-      {required AppUserModel appUser, bool merge = true}) async {
+  Future<AppUser?> createAppUserDoc(
+      {required AppUser appUser, bool merge = true}) async {
     try {
-      await _usercollectionReference.doc(appUser.email).set(appUser.toJson());
-      ConUtils.printLog(
+      queryDocumentSnapshot = (await _usercollectionReference
+          .where('userId', isEqualTo: appUser.email)
+          .get()) as QueryDocumentSnapshot<Map<String, dynamic>>;
+      if (queryDocumentSnapshot.exists) {
+        //create ApppUser to return
+        AppUser appUser = AppUser.fromJson(
+            (queryDocumentSnapshot.data) as Map<String, dynamic>);
+        Utilities.log(appUser.toString());
+
+        return appUser;
+      } else {
+        //user does not exist
+        return null;
+      }
+      Utilities.log(
           'created Appuser in Firestore\n${appUser.toJson().toString()}');
     } catch (e) {
-      ConUtils.printLog(
+      Utilities.log(
           'Firestore service\n createUserProfile\nerror encountered: \n${e.toString()}');
       // dialogService.showDialog(
       //   title: 'Error',
@@ -97,13 +113,92 @@ class FirestoreService {
         .collection('patients')
         .add(patient.toJson())
         .then((value) async {
-      ConUtils.printLog(
+      Utilities.log(
           'new patient with id P-0${patientCounter + 1} written to firestore with uid = $value');
       await _incrementPatientCounter().then((value) {
-        ConUtils.printLog(
+        Utilities.log(
             'patient counter in firestore incremented to ${patientCounter + 1} ');
       });
     });
     return true;
   }
+
+  ///retrive UserRole doc from  firestore [userRoles] collection
+
+  Future<UserRole> getUserRoleDoc({required String roleId}) async {
+    querySnapshot = await FirebaseFirestore.instance
+        .collection('userRoles')
+        .where('roleId', isEqualTo: roleId)
+        .get();
+    if (querySnapshot.docs.length > 0) {
+      //create role Object and return
+      Map<String, dynamic> data = querySnapshot.docs[0].data();
+      var userRole =
+          UserRole(roleId: data['roleId'], roleName: data['roleName']);
+      return userRole;
+    } else {
+      Utilities.log('roleId: $roleId not found in firesore');
+      return null as UserRole;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getAppUserDoc({required String userId}) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('appUsers')
+        .where('userId', isEqualTo: userId)
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+//get all user roles
+
+      return querySnapshot.docs[0].data();
+    } else
+      throw Exception('AppUserDoc not found in Firestore');
+  }
+
+  Future<List<UserRole>?> get getAllUserRoles async {
+    querySnapshot =
+        await FirebaseFirestore.instance.collection('userRoles').get();
+
+    if (querySnapshot.docs.length > 0) {
+      Utilities.log('''length of userRoles collection=
+ ${querySnapshot.docs.length}
+ 
+ ''');
+      //iterate through docs and
+      //create role Object and return
+
+      return querySnapshot.docs
+          .map((e) => UserRole(
+                roleId: e.data()["roleId"],
+                roleName: e.data()['roleName'],
+              ))
+          .toList();
+    } else {
+      return null;
+    }
+  }
+
+  // _handleUserRoles() {
+
+  // var userRole;
+  //   String rolesString = data['roles'];
+  //   List<String> rolesList = rolesString.split(',');
+  //   for (var i = 0; i < rolesList.length; i++) {
+  //     try {
+  //        userRole =
+  //           await FirestoreService().getUserRoleDoc(roleId: rolesList[i]);
+  //     } catch (e) {
+  //       Utilities.log(e.toString());
+  //     }
+
+  //     if (i == 0) {
+  //       this.selectedRole = userRole;
+  //     }
+  //     this.userRoles.add(userRole);
+  //   }
+
+
+
+  // }
 }

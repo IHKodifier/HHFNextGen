@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/providers/authentication_state_notifier.dart';
 import 'package:hhf_next_gen/ui/views/home/home_view.dart';
 import 'package:hhf_next_gen/ui/views/login/login_form.dart';

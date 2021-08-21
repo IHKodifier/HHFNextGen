@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/user_role.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/locator.dart';
-import 'package:hhf_next_gen/app/models/app_user_model.dart';
+import 'package:hhf_next_gen/app/models/app_user.dart';
 import 'package:hhf_next_gen/app/services/auth_service.dart';
 import 'package:hhf_next_gen/app/services/navigation_service.dart';
 import 'package:hhf_next_gen/app/states/auth_state.dart';
@@ -10,40 +12,35 @@ import '../../app/routing/routenames.dart' as routes;
 class AuthStateNotifier extends StateNotifier<AuthState> {
   NavigationService navigationService = servicelocator<NavigationService>();
   AuthStateNotifier() : super(AuthState());
-  // late final authResult;
+
   bool busy = false;
 
-  //for testing set to false
+  late AppUser _appUser;
 
   late final hasAuthenticatedUser = state.hasAuthenticatedUser;
 
   signIn({required String email, required String password}) async {
     state.isBusy = true;
-    // await Future.delayed(Duration(seconds: 5));
-    var authResult;
     try {
-      authResult =
-          await AuthService().loginWithEmail(email: email, password: password);
+      _appUser = (await AuthService()
+          .loginWithEmail(email: email, password: password))!;
     } catch (e) {
-      ConUtils.printLog(e.toString());
-      state.isBusy = false;
+      Utilities.log(e.toString());
+    
     }
-    if (authResult != null) {
+    state.isBusy = false;
+    if (_appUser != null) {
+      
       state.isBusy = false;
-      state.authenticatedUser = AppUserModel.fromMinimal(email);
+      // state.authenticatedUser = AppUser.fromMinimal(email);
       state.hasAuthenticatedUser = true;
+      state.authenticatedUser = _appUser;
 
       navigationService.navigatorKey.currentState!
           .popAndPushNamed(routes.HomeRoute);
-      ConUtils.printLog(
-          'returned User received by notifier = \n ${authResult.email}');
-    } else {
-      state.isBusy = false;
-      state.hasAuthenticatedUser = false;
-      state.authenticatedUser = AppUserModel.fromNull();
-      ConUtils.printLog(
-          'Null  User received by Auth State Notifier \n ${authResult.toString()}');
-    }
+    } else {}
+    state.isBusy = false;
+    state.hasAuthenticatedUser = true;
   }
 
   signUp(String email, String password) {
@@ -51,4 +48,5 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   }
 
   bool get isBusy => state.isBusy;
+  List<UserRole> get roles => state.authenticatedUser!.userRoles;
 }

@@ -4,47 +4,59 @@
 /// found in the LICENSE file.
 /// //TODO:  add license file
 /// endregion
+
 // # region imports
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hhf_next_gen/app/services/firestore_service.dart';
 
-import '../../app/models/app_user_model.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import '../models/app_user.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 
+// #endregion
 class AuthService {
-  late AppUserModel currentAppUser;
+  late AppUser currentAppUser;
   final _authInstance = FirebaseAuth.instance;
   late UserCredential userCredential;
   // var authResult;
 
-  Future<dynamic> loginWithEmail({
-    required String email,
-    required String password,
-  }) async {
+  Future<AppUser?> loginWithEmail(
+      {required String email, required String password}) async {
     try {
       userCredential = await _authInstance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+          email: email, password: password);
     } catch (e) {
-      ConUtils.printLog(e.toString());
+      Utilities.log(e.toString());
       // if (e.code == 'user-not-found') {
       //   print('No user found for that email.');
       // } else if (e.code == 'wrong-password') {
       //   print('Wrong password provided for that user.');
-      // }
-
-      // if (userCredential != null) {
-      //   ConUtils.printLog('sign in with EMAIL/PASSWORD successfull for $email');
-
-      //   // return authResult.user;
-      // } else {
-      //   // currentAppUser = null;
-      //   return null;
     }
-    ConUtils.printLog('credentials verified by Auth Service for ${userCredential.user!.email}');
-    ConUtils.printLog('returning user from Auth Service');
-    return userCredential.user;
+
+    if (userCredential.user != null) {
+      Utilities.log(
+          'sign in with EMAIL/PASSWORD successfull for ${userCredential.user!.email}');
+      Utilities.log('reading app user doc from firestore');
+      var data = await FirestoreService()
+          .getAppUserDoc(userId: userCredential.user!.email!);
+
+      //create AppUser
+      Utilities.log('creating AppUser');
+      currentAppUser = AppUser.fromJson(data!);
+      await currentAppUser.handleUserRoles(data);
+      return currentAppUser;
+      // currentAppUser = AppUser(userId: userCredential.user!.email);
+      //TODO: read appUserDoc from Firestore
+
+    } else {
+      currentAppUser = null as AppUser;
+    }
+
+    Utilities.log(
+        'credentials verified by Auth Service for ${userCredential.user!.email}');
+    Utilities.log('returning user from Auth Service');
+
+    return currentAppUser;
   }
 
   createUserWithEmail(String email, String password) async {
@@ -57,8 +69,8 @@ class AuthService {
       );
       result = userCredential;
     } catch (e) {
-      ConUtils.printLog(e.toString());
-      ConUtils.printLog(result.toString());
+      Utilities.log(e.toString());
+      Utilities.log(result.toString());
     }
   }
 }

@@ -27,6 +27,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dependencies: null
   device_info_plus: ^2.0.1
+  equatable: ^2.0.3
   firebase_auth: ^2.0.0
   firebase_core: ^1.2.0
   flutter_riverpod: ^1.0.0-dev.3
@@ -41,8 +42,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_web_compilers: ^2.12.0
-  # build_runner: ^2.0.4
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

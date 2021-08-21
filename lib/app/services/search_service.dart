@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/models/patient.dart';
 
 class SearchService {
@@ -45,7 +45,7 @@ class SearchService {
           .get();
       retval = results.docs.map((e) => Patient.fromJson(e.data())).toList();
     } catch (e) {
-      ConUtils.printLog(e.toString());
+      Utilities.log(e.toString());
     }
     return retval;
   }

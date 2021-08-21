@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import 'package:hhf_next_gen/app/models/enums.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/access_resource_identifier.dart';
+import 'package:hhf_next_gen/app/tools/class_info.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/constants/styles.dart';
 import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/providers/providers.dart';
@@ -13,13 +16,27 @@ import 'package:hhf_next_gen/app/routing/routenames.dart' as routes;
 import 'package:hhf_next_gen/ui/views/home/home_welcome_note.dart';
 import 'package:hhf_next_gen/ui/views/home/job_inbox.dart';
 import 'package:hhf_next_gen/ui/views/home/project_overview.dart';
+import 'package:hhf_next_gen/ui/widgets/access_secured_widget.dart';
 import 'package:hhf_next_gen/ui/widgets/search_bar/searchbar.dart';
 
 class HomeContentDesktop extends StatelessWidget {
-  const HomeContentDesktop({Key? key}) : super(key: key);
+  HomeContentDesktop({Key? key}) : super(key: key);
+  final classInfo = ClassInfo(name: 'HomeContentDesktop', version: '1.0.0');
+  final accessResource = AccessResource(
+      resourceId: 'PatientProfile',
+      resourceType: ResourceType.Entity,
+      resourceName: 'Patient Profile');
 
   @override
   Widget build(BuildContext context) {
+    return AccessSecuredWidget(
+      child: _buildchild(context),
+      verbose: false,
+      accessResource: accessResource,
+    );
+  }
+
+  Material _buildchild(BuildContext context) {
     return Material(
       child: SingleChildScrollView(
         child: Padding(
@@ -48,7 +65,7 @@ class HomeContentDesktop extends StatelessWidget {
                       Consumer(builder:
                           (BuildContext context, WidgetRef ref, Widget? child) {
                         final auth = ref.watch(authProvider);
-                        return Text(auth.authenticatedUser.email!);
+                        return Text(auth.authenticatedUser!.email!);
                       }),
                       SearchBar(),
                     ],

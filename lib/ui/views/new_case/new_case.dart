@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hhf_next_gen/app/console_utility.dart';
+import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/locator.dart';
 import 'package:hhf_next_gen/app/models/patient.dart';
 import 'package:hhf_next_gen/app/services/search_service.dart';
@@ -159,7 +159,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
               hasPatientSelection = true;
             });
 
-            ConUtils.printLog(
+            Utilities.log(
                 '${selectedPatient!.firstName} was selected from Search');
           },
           textFieldConfiguration: TextFieldConfiguration(
@@ -264,7 +264,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
           setState(() {
             selectedState = newValue!;
 
-            ConUtils.printLog('selected value equals $newValue');
+            Utilities.log('selected value equals $newValue');
           });
         },
         items: caseStatusitems
@@ -289,7 +289,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
           setState(() {
             selectedService = newValue!;
 
-            ConUtils.printLog('selected Service equals $newValue');
+            Utilities.log('selected Service equals $newValue');
           });
         },
         items: caseServiceitemsList
@@ -364,7 +364,7 @@ class _NewFinancingCaseState extends State<NewFinancingCase> {
   }
 
   Widget buildPatientCard(BuildContext context, Patient? patient) {
-    ConUtils.printLog(patient!.firstName);
+    Utilities.log(patient!.firstName);
     return Container(
       width: 50,
       child: ListTile(
