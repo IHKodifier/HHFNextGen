@@ -14,7 +14,7 @@ import '../models/app_user.dart';
 import 'package:hhf_next_gen/app/tools/utilities.dart';
 
 // #endregion
-class AuthService {
+class AuthenticationService {
   late AppUser currentAppUser;
   final _authInstance = FirebaseAuth.instance;
   late UserCredential userCredential;

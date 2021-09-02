@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hhf_next_gen/app/tools/utilities.dart';
-import 'package:hhf_next_gen/app/providers/authentication_state_notifier.dart';
+import 'package:hhf_next_gen/app/providers/authentication_notifier.dart';
 import 'package:hhf_next_gen/ui/views/home/home_view.dart';
 import 'package:hhf_next_gen/ui/views/login/login_form.dart';
 import '../../../app/providers/providers.dart';
@@ -17,9 +17,9 @@ class LoginView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
+    final authState = ref.watch(authenticationProvider);
 
-    final authNotifier = ref.watch(authProvider.notifier);
+    final authNotifier = ref.watch(authenticationProvider.notifier);
 // authState.
     return Container(
       color: Colors.black.withOpacity(0.65),
@@ -78,7 +78,7 @@ class LoginView extends ConsumerWidget {
         ));
   }
 
-  Container buildLoginButton(AuthStateNotifier authNotifier) {
+  Container buildLoginButton(AuthenticationNotifier authNotifier) {
     return Container(
       // width: 300,
       height: 50,

@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hhf_next_gen/app/models/enums.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_resource_identifier.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/access_resource.dart';
 import 'package:hhf_next_gen/app/tools/class_info.dart';
 import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/app/constants/styles.dart';
@@ -64,7 +64,7 @@ class HomeContentDesktop extends StatelessWidget {
                       ),
                       Consumer(builder:
                           (BuildContext context, WidgetRef ref, Widget? child) {
-                        final auth = ref.watch(authProvider);
+                        final auth = ref.watch(authenticationProvider);
                         return Text(auth.authenticatedUser!.email!);
                       }),
                       SearchBar(),

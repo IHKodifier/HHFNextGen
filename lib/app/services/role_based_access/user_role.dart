@@ -1,12 +1,10 @@
-import 'package:hhf_next_gen/app/services/role_based_access/access_permissions.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_resource_identifier.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/access_permission.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/access_resource.dart';
 
-class UserRole {
-  const UserRole({
-    required this.roleName,
-    required this.roleId,
-    // this.createdOn,
-  });
+class UserRole extends Equatable {
+  const UserRole({required this.roleName, required this.roleId});
 
   // late AppUserModel createdBy;
   final String roleName, roleId;
@@ -20,14 +18,17 @@ class UserRole {
   static const caseAuthorizer =
       UserRole(roleId: 'Authorizer', roleName: 'Case Authorizer');
   static const caseDispatcher =
-      UserRole(roleId: 'Registrar', roleName: 'Case Registrar');
-  static const guest = UserRole(roleName: 'Customer Preview', roleId: 'Guest');
+      UserRole(roleId: 'Dispatcher', roleName: 'Case Dispatcher');
 
+  static const guest = UserRole(roleId: 'Preview', roleName: 'Customer Preview');
 
-
-  bool hasAccessToResource(
-      AccessResource accessResource, AccessPermissions accessLevel) {
-    //for testing
-    return true;
+  @override
+  String toString() {
+    return ''' roleId=$roleId  roleName=$roleName    
+    ''';
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [roleId];
 }

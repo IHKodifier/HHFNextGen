@@ -4,17 +4,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hhf_next_gen/app/locator.dart';
-import 'package:hhf_next_gen/app/providers/authentication_state_notifier.dart';
-import 'package:hhf_next_gen/app/services/navigation_service.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_resolution.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_resource_identifier.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_right.dart';
-import 'package:hhf_next_gen/app/services/role_based_access/access_rules_repo.dart';
-import 'package:hhf_next_gen/app/states/auth_state.dart';
+import 'package:hhf_next_gen/app/providers/authentication_notifier.dart';
+import 'package:hhf_next_gen/app/providers/authorization_notifier.dart';
+import 'package:hhf_next_gen/app/services/authorization_service.dart';
+import 'package:hhf_next_gen/app/services/role_based_access/user_role.dart';
+import 'package:hhf_next_gen/app/states/authentication_state.dart';
+import 'package:hhf_next_gen/app/states/authorization_state.dart';
+import '../providers/providers.dart' as providers;
 
-final authProvider = StateNotifierProvider<AuthStateNotifier, AuthState>(
-    (ref) => AuthStateNotifier());
+final authenticationProvider =
+    StateNotifierProvider<AuthenticationNotifier, AuthenticationState>(
+        (ref) => AuthenticationNotifier());
 
+final authorizationProvider =
+    StateNotifierProvider<AuthorizationNotifier, AuthorizationState>((ref) {
+  final authenticationProvider =
+      ref.watch(providers.authenticationProvider.notifier);
+
+  AuthorizationNotifier authorizationNotifier =
+      AuthorizationNotifier();
+
+  authorizationNotifier.state.selectedRole =
+      authenticationProvider.state.selectedRole;
+
+  // authorizationNotifier.state.defaultUserRole =
+  // authenticationProvider.state.defaultRole;
+
+  return authorizationNotifier;
+});
+ 
 // final accessRulesRepoProvider = Provider((ref) => accessRulesRepo);
 
 // final accessProvider= 

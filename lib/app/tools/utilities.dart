@@ -10,11 +10,9 @@ class Utilities {
   Map<String, dynamic> _deviceData = <String, dynamic>{};
   static log(String? data) {
     print('''
-        ////////////////////////////PRINTING APP LOG ///////////////////////////////////////////
-            [ ${DateTime.now().toString()}]
-        ${data!} 
-        
-        ''');
+_______________________________________
+${data!} 
+''');
   }
 
   var deviceData = <String, dynamic>{};
@@ -27,6 +25,7 @@ class Utilities {
     try {
       if (kIsWeb) {
         deviceData = _readWebBrowserInfo(await deviceInfoPlugin.webBrowserInfo);
+        log(deviceData.toString());
       } else {
         if (Platform.isAndroid) {
           deviceData =
