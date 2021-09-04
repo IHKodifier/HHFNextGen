@@ -19,6 +19,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   late AppUser _appUser;
   AppUser? get authenticatedUser => _appUser;
   late final hasAuthenticatedUser = state.hasAuthenticatedUser;
+  
 
   signIn({required String email, required String password}) async {
     state.isBusy = true;

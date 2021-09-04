@@ -18,19 +18,7 @@ final authenticationProvider =
 
 final authorizationProvider =
     StateNotifierProvider<AuthorizationNotifier, AuthorizationState>((ref) {
-  final authenticationProvider =
-      ref.watch(providers.authenticationProvider.notifier);
-
-  AuthorizationNotifier authorizationNotifier =
-      AuthorizationNotifier();
-
-  authorizationNotifier.state.selectedRole =
-      authenticationProvider.state.selectedRole;
-
-  // authorizationNotifier.state.defaultUserRole =
-  // authenticationProvider.state.defaultRole;
-
-  return authorizationNotifier;
+  return AuthorizationNotifier();
 });
  
 // final accessRulesRepoProvider = Provider((ref) => accessRulesRepo);

@@ -17,6 +17,7 @@ import 'package:hhf_next_gen/ui/views/home/home_welcome_note.dart';
 import 'package:hhf_next_gen/ui/views/home/job_inbox.dart';
 import 'package:hhf_next_gen/ui/views/home/project_overview.dart';
 import 'package:hhf_next_gen/ui/widgets/access_secured_widget.dart';
+import 'package:hhf_next_gen/ui/widgets/appuser_avatar.dart';
 import 'package:hhf_next_gen/ui/widgets/search_bar/searchbar.dart';
 
 class HomeContentDesktop extends StatelessWidget {
@@ -54,22 +55,7 @@ class HomeContentDesktop extends StatelessWidget {
                     'Home',
                     style: Theme.of(context).textTheme.headline4,
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Icon(
-                        Icons.account_circle,
-                        size: 50,
-                      ),
-                      Consumer(builder:
-                          (BuildContext context, WidgetRef ref, Widget? child) {
-                        final auth = ref.watch(authenticationProvider);
-                        return Text(auth.authenticatedUser!.email!);
-                      }),
-                      SearchBar(),
-                    ],
-                  ),
+                  AppUserAvatar(),
                 ],
               ),
               Container(

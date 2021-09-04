@@ -12,12 +12,20 @@ import 'package:hhf_next_gen/ui/widgets/access_secured_widget.dart';
 class AuthorizationNotifier extends StateNotifier<AuthorizationState> {
   AuthorizationNotifier() : super(AuthorizationState());
 
-  UserRole get selectedRole => state.selectedRole;
   final authorizationRulesRepo = authorizarionRulesRepository;
+  List<UserRole> get userRoles=>state.userRoles;
   bool get canRead => state.canRead;
   bool get canCreate => state.canCreate;
   bool get canEdit => state.canEdit;
   bool get canPrint => state.canPrint;
+  UserRole get selectedRole => state.selectedRole;
+
+  void setSelectedRole(UserRole role) {
+    state.selectedRole = role;
+         
+  }
+
+  
 
   List<AccessPermission>? getPermissions({required AccessRequest searchKey}) {
     Utilities.log(
@@ -43,6 +51,4 @@ class AuthorizationNotifier extends StateNotifier<AuthorizationState> {
       if (element == AccessPermission.Print) state.canPrint = true;
     });
   }
-
-  // bool canCreate(AccessSecuredWidget widget) => state.canCreate(widget);
 }
