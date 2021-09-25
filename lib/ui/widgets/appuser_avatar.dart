@@ -7,59 +7,123 @@ import 'package:hhf_next_gen/app/services/role_based_access/user_role.dart';
 import 'package:hhf_next_gen/app/tools/utilities.dart';
 import '../../app/providers/providers.dart' as providers;
 
-class AppUserAvatar extends ConsumerStatefulWidget {
+class AppUserAvatar extends ConsumerWidget {
+  const AppUserAvatar({Key? key}) : super(key: key);
+
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AppUserAvatarState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.read(providers.authenticationProvider).authenticatedUser!;
+    final state = ref.watch(providers.authorizationProvider);
 
-class _AppUserAvatarState extends ConsumerState<AppUserAvatar> {
-  late AppUser authenticatedUser;
-  late UserRole selectedRole;
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    authenticatedUser =
-        ref.watch(providers.authenticationProvider).authenticatedUser!;
-    selectedRole = ref.watch(providers.authorizationProvider).selectedRole;
+    return Consumer(
+      builder: (context, ref, child) {
+        ref.watch(providers.authorizationProvider);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Icon(
+              Icons.account_circle,
+              size: 50,
+            ),
+            Text(user.email!),
+            DropdownButton<String>(
+              dropdownColor: Theme.of(context).primaryColorLight,
+              isDense: true,
+              autofocus: true,
+              value: state.selectedRole.roleName,
+              items: user.userRoles
+                  .map(
+                    (e) => DropdownMenuItem<String>(
+                        child: Text(e.roleName), value: e.roleName),
+                  )
+                  .toList(),
+              onChanged: (val) {
+                user.userRoles.forEach((role) {
+                  if (role.roleName == val) {
+                    state.selectedRole = role;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Icon(
-          Icons.account_circle,
-          size: 50,
-        ),
-        Text(authenticatedUser!.email!),
-        DropdownButton<String>(
-          //  focusColor: Colors.amber[100],
-          dropdownColor: Colors.blueGrey[50],
-          isDense: true,
-          autofocus: true,
-          value: selectedRole.roleName,
-
-          items: authenticatedUser.userRoles
-              .map(
-                (e) => DropdownMenuItem<String>(
-                    child: Text(e.roleName), value: e.roleName),
-              )
-              .toList(),
-          onChanged: (val) {
-            authenticatedUser.userRoles.forEach((role) {
-              if (role.roleName == val) {
-                ref
-                    .read(providers.authorizationProvider.notifier)
-                    .setSelectedRole(role);
-                Utilities.log(
-                    '''selectedRole has been switched to 
-                    ${ref.read(providers.authorizationProvider).selectedRole.roleName}
-                      ''');
-                setState(() {});
-              }
-            });
-          },
-        ),
-      ],
+                    Utilities.log('''selectedRole has been switched to 
+                     ${state.selectedRole.roleName}
+                        ''');
+                  }
+                });
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// class AppUserAvatar extends ConsumerStatefulWidget {
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() => _AppUserAvatarState();
+// }
+
+// class _AppUserAvatarState extends ConsumerState<AppUserAvatar> {
+//   late AppUser authenticatedUser;
+//   late UserRole selectedRoleprovider;
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     authenticatedUser =
+//         ref.watch(providers.authenticationProvider).authenticatedUser!;
+//     selectedRoleprovider =
+//         ref.watch(providers.authorizationProvider).selectedRole;
+
+//     return Column(
+//       mainAxisSize: MainAxisSize.min,
+//       crossAxisAlignment: CrossAxisAlignment.end,
+//       children: [
+//         Icon(
+//           Icons.account_circle,
+//           size: 50,
+//         ),
+//         Text(authenticatedUser!.email!),
+//         DropdownButton<String>(
+//           //  focusColor: Colors.amber[100],
+//           dropdownColor: Theme.of(context).primaryColorLight,
+//           isDense: true,
+//           autofocus: true,
+//           value: selectedRoleprovider.roleName,
+
+//           items: authenticatedUser.userRoles
+//               .map(
+//                 (e) => DropdownMenuItem<String>(
+//                     child: Text(e.roleName), value: e.roleName),
+//               )
+//               .toList(),
+//           onChanged: (val) {
+//             authenticatedUser.userRoles.forEach((role) {
+//               if (role.roleName == val) {
+//                 ref
+//                     .watch(providers.authorizationProvider.notifier).setSelectedRole(role);
+//                     // .state
+//                     // .selectedRole = role;
+//                 // .setSelectedRole(role);
+//                 Utilities.log('''selectedRole has been switched to 
+//                     ${ref.read(providers.authorizationProvider).selectedRole.roleName});
+//                     }
+//                       ''');
+//                 // setState(() {});
+//               }
+//             });
+//           },
+//         ),
+//       ],
+//     );
+//   }
+// }

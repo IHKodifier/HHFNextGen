@@ -4,8 +4,6 @@ import 'package:hhf_next_gen/app/services/role_based_access/access_resource.dart
 import 'package:hhf_next_gen/app/services/role_based_access/access_request.dart';
 import 'package:hhf_next_gen/app/services/role_based_access/user_role.dart';
 
-
-
 Map<AccessRequest, List<AccessPermission>> authorizarionRulesRepository = {
   AccessRequest(
       accessResource: AccessResource(
@@ -28,5 +26,13 @@ Map<AccessRequest, List<AccessPermission>> authorizarionRulesRepository = {
       userRole: UserRole.caseEvaluator): [
     AccessPermission.Read,
     AccessPermission.Print
+  ],
+  AccessRequest(
+      accessResource: AccessResource(
+          resourceId: 'NewCaseButton',
+          resourceName: 'New Case Button',
+          resourceType: ResourceType.Button),
+      userRole: UserRole.caseRegistrar): [
+    AccessPermission.Click,
   ]
 };

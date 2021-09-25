@@ -18,7 +18,8 @@ final authenticationProvider =
 
 final authorizationProvider =
     StateNotifierProvider<AuthorizationNotifier, AuthorizationState>((ref) {
-  return AuthorizationNotifier();
+  final user = ref.read(authenticationProvider).authenticatedUser;
+  return AuthorizationNotifier(user);
 });
  
 // final accessRulesRepoProvider = Provider((ref) => accessRulesRepo);

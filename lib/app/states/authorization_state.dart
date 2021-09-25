@@ -14,10 +14,9 @@ class AuthorizationState {
   late UserRole selectedRole;
   late List<UserRole> userRoles = [];
   late AppUser authenticatedUser;
-  
-  late var authRulesRepo = authorizarionRulesRepository;
   late List<AccessPermission>? grantedPermissions;
-  bool canRead = false, canCreate = false, canEdit = false, canPrint = false;
+  bool canRead = false, canCreate = false, canEdit = false, canPrint = false,canClick=false;
+
 
 
  

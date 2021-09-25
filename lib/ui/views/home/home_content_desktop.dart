@@ -81,14 +81,21 @@ class HomeContentDesktop extends StatelessWidget {
                                       height: 50,
                                       width: MediaQuery.of(context).size.width *
                                           0.18,
-                                      child: ElevatedButton.icon(
-                                          style: globalButtonStyle,
-                                          onPressed: createNewCase,
-                                          icon: Icon(
-                                            Icons.add,
-                                            size: 45,
-                                          ),
-                                          label: Text('New Case')),
+                                      child: AccessSecuredWidget(
+                                        accessResource: AccessResource(
+                                          resourceId: 'NewCaseButton',
+                                          resourceName: 'New Case Button',
+                                          resourceType: ResourceType.Button
+                                        ),
+                                        child: ElevatedButton.icon(
+                                            style: globalButtonStyle,
+                                            onPressed: createNewCase,
+                                            icon: Icon(
+                                              Icons.add,
+                                              size: 45,
+                                            ),
+                                            label: Text('New Case')),
+                                      ),
                                     ),
                                   ),
                                   Card(

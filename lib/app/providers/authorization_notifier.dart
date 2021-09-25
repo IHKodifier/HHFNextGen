@@ -10,45 +10,41 @@ import 'package:hhf_next_gen/app/tools/utilities.dart';
 import 'package:hhf_next_gen/ui/widgets/access_secured_widget.dart';
 
 class AuthorizationNotifier extends StateNotifier<AuthorizationState> {
-  AuthorizationNotifier() : super(AuthorizationState());
+  AuthorizationNotifier(this.authenticatedUser) : super(AuthorizationState());
+  final authenticatedUser;
 
   final authorizationRulesRepo = authorizarionRulesRepository;
-  List<UserRole> get userRoles=>state.userRoles;
-  bool get canRead => state.canRead;
-  bool get canCreate => state.canCreate;
-  bool get canEdit => state.canEdit;
-  bool get canPrint => state.canPrint;
-  UserRole get selectedRole => state.selectedRole;
 
-  void setSelectedRole(UserRole role) {
-    state.selectedRole = role;
-         
-  }
 
-  
 
-  List<AccessPermission>? getPermissions({required AccessRequest searchKey}) {
-    Utilities.log(
-        'checking permissions for ${searchKey.userRole.roleId} to access ${searchKey.accessResource.resourceId}');
+  void setPermissions({required AccessRequest searchKey}) {
+    Utilities.log('''...
+        checking permissions for ${searchKey.userRole.roleId} to access ${searchKey.accessResource.resourceId}...''');
     // Utilities.log(
     //     'Printing authorization rules repository ${authorizationRulesRepo}');
     if (authorizationRulesRepo.containsKey(searchKey)) {
-      state.grantedPermissions = authorizationRulesRepo[searchKey];
+      final grantedPermissions = authorizationRulesRepo[searchKey];
+      resolveAccess(grantedPermissions);
     } else
       state.grantedPermissions = [AccessPermission.none];
-    // Utilities.log('permissions found...${state.grantedPermissions}');
+   
 
-    // Utilities.log('NO \npermissions found...${state.grantedPermissions}');
-    _initiaizePermissionGetters();
-    return state.grantedPermissions;
   }
 
-  void _initiaizePermissionGetters() {
-    state.grantedPermissions!.forEach((element) {
-      if (element == AccessPermission.Create) state.canCreate = true;
-      if (element == AccessPermission.Edit) state.canEdit = true;
-      if (element == AccessPermission.Read) state.canRead = true;
-      if (element == AccessPermission.Print) state.canPrint = true;
+  void resolveAccess(List<AccessPermission>? grantedPermissions) {
+    grantedPermissions!.forEach((permission) {
+      if (permission == AccessPermission.Click) {
+        state.canClick = true;
+      }
+         if (permission == AccessPermission.Edit) {
+        state.canEdit = true;
+      }
+         if (permission == AccessPermission.Read) {
+        state.canRead = true;
+      }
+      if (permission == AccessPermission.Print) {
+        state.canPrint = true;
+      }
     });
   }
 }

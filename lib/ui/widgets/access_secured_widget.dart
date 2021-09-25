@@ -1,6 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hhf_next_gen/app/providers/authentication_notifier.dart';
@@ -45,7 +42,7 @@ class AccessSecuredWidget extends StatelessWidget {
         authorizationProvider.state.authenticatedUser =
             authenticationProvider.state.authenticatedUser!;
 
-        authorizationProvider.getPermissions(
+        authorizationProvider.setPermissions(
             searchKey: AccessRequest(
                 accessResource: accessResource,
                 userRole: authenticationProvider.state.selectedRole));
@@ -57,7 +54,7 @@ Can Edit ? ${authorizationProvider.state.canEdit}
 Can Print ? ${authorizationProvider.state.canPrint}
         ''');
 
-        if (authorizationProvider.canRead) {
+        if (authorizationProvider.state.canRead) {
           return this.child;
         } else
           return Center(child: Text('Access DENIED'));
